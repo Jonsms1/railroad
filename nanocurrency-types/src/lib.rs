@@ -240,7 +240,7 @@ impl fmt::Debug for Account {
 
 impl fmt::Display for Account {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "xrb_")?;
+        write!(f, "bcb_")?;
         let mut reverse_chars = Vec::<u8>::new();
         let mut check_hash = VarBlake2b::new(5).unwrap();
         check_hash.input(&self.0 as &[u8]);
@@ -292,7 +292,7 @@ impl FromStr for Account {
     fn from_str(s: &str) -> Result<Account, AccountParseError> {
         let mut s_chars = s.chars();
         let mut ext_pubkey = BigInt::default();
-        if s.starts_with("xrb_") {
+        if s.starts_with("bcb_") {
             (&mut s_chars).take(4).count();
         } else if s.starts_with("nano_") {
             (&mut s_chars).take(5).count();
@@ -373,7 +373,7 @@ fn deserialize_link<'de, D: serde::de::Deserializer<'de>>(
     deserializer: D,
 ) -> Result<[u8; 32], D::Error> {
     let s = String::deserialize(deserializer)?;
-    if s.starts_with("xrb_") || s.starts_with("nano_") {
+    if s.starts_with("bcb_") || s.starts_with("nano_") {
         Account::from_str(&s)
             .map_err(serde::de::Error::custom)
             .map(|a| a.0)
@@ -695,7 +695,7 @@ impl BlockInner {
 
 pub fn work_threshold(network: Network) -> u64 {
     match network {
-        Network::Live | Network::Beta => 0xffffffc000000000,
+        Network::Live | Network::Beta => 0xff00000000000000,
         Network::Test => 0xff00000000000000,
     }
 }
